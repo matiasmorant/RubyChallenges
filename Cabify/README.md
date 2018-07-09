@@ -1,6 +1,6 @@
 # Cabify Code Challenge
 
-This is the solution to the code challenge in Ruby
+This is the solution to [the code challenge](https://github.com/cabify/rubyChallenge) in Ruby
 
 You can run it directly by executing ```ruby cabify.rb```
 
