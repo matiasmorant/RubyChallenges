@@ -2,14 +2,38 @@ require 'test/unit'
 require 'test/unit/testsuite'
 require 'date'
 
+# A +Normalizer+ is used for normalizing inputs.
+# To implement a custom +Normalizer+, you have to subclass it.
+# See the implemented Normalizers for examples.
+# 
+# A +Normalizer+ must:
+#   * either have an +@input_format+ member or override the +Normalizer#parse+ method
+#      AND
+#   * either have an +@output_format+ member or override the +Normalizer#assemble+ method
+#      OR
+#   * instead of any of the above, override the +Normalizer#normalize+ method
+# 
+# An +@input_format+ can be either:
+#   * A regular expression
+#   * A list of regular expressions (all will be considered to be valid input formats)
+#   * A Date format string
+# 
+# An +@output_format+ can be either:
+#   * A format string
+#   * A Date format string
+
 class Normalizer
-  def self.parse (s)
-    [@input_format]
-      .flatten
-      .map  { |f| Date.strptime(s, f) rescue f.match(s) }
-      .compact
-      .first || raise("#{s} is not a valid #{self}")
+    # The +Normalizer#parse+ method receives a string 
+    # and returns the result of the first valid +input_format+ match
+    def self.parse (s)
+      [@input_format]
+        .flatten
+        .map  { |f| Date.strptime(s, f) rescue f.match(s) }
+        .compact
+        .first || raise("#{s} is not a valid #{self}")
   end
+  # The +Normalizer#assemble+ method receives the results of the +Normalizer#parse+ method.
+  # It returns the string resulting from formatting its argument with +@output_format+
   def self.assemble (fields)
     if fields.class == MatchData
       @output_format % fields
@@ -20,6 +44,8 @@ class Normalizer
       fields.strftime(@output_format)
     end
   end
+  # +Normalizer#normalize+ receives a string and returns a string
+  # It is (by default) just the composition of +Normalizer#parse+ and +Normalizer#assemble+.
   def self.normalize(s)
     assemble(parse(s))
   end
