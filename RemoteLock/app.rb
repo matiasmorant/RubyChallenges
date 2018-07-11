@@ -23,14 +23,14 @@ require 'date'
 #   * A Date format string
 
 class Normalizer
-    # The +Normalizer#parse+ method receives a string 
-    # and returns the result of the first valid +input_format+ match
-    def self.parse (s)
-      [@input_format]
-        .flatten
-        .map  { |f| Date.strptime(s, f) rescue f.match(s) }
-        .compact
-        .first || raise("#{s} is not a valid #{self}")
+  # The +Normalizer#parse+ method receives a string 
+  # and returns the result of the first valid +input_format+ match
+  def self.parse (s)
+    [@input_format]
+      .flatten
+      .map  { |f| Date.strptime(s, f) rescue f.match(s) }
+      .compact
+      .first || raise("#{s} is not a valid #{self}")
   end
   # The +Normalizer#assemble+ method receives the results of the +Normalizer#parse+ method.
   # It returns the string resulting from formatting its argument with +@output_format+
